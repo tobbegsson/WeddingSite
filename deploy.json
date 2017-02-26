@@ -1,0 +1,452 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": { 
+	"storageAccountName": {
+		"type": "string",
+		"minLength": 1
+	},
+	"adminLogin": {
+		"type": "string"
+	},
+	"adminPsw": {
+		"type": "securestring"
+	},
+	"dbName": {
+		"type": "string"
+	},
+	"edition": {
+		"type": "string",
+		"defaultValue": "Basic",
+		"allowedValues": [
+			"Basic",
+			"Standard",
+			"Premium"
+		]
+	},
+	"collation": {
+		"type": "string",
+		"defaultValue": "SQL_Latin1_General_CP1_CI_AS"
+	},
+	"maxSizeBytes": {
+		"type": "string",
+		"defaultValue": "1073741824"
+	},
+	"requestedServObjName": {
+		"type": "string",
+		"defaultValue": "Basic",
+		"allowedValues": [
+			"Basic",
+			"S0",
+			"S1",
+			"S2",
+			"P1",
+			"P2",
+			"P3"
+		],
+		"metadata":{
+			"description": "Beskriver utgåvans kapacitetsnivå"
+		}
+	},
+	"hostPlanName": {
+		"type": "string",
+		"minLength": 1
+	},
+	"skuName": {
+		"type": "string",
+		"defaultValue": "F1",
+		"allowedValues": [
+			"F1",
+			"D1",
+			"B1",
+			"B2",
+			"B3",
+			"S1",
+			"S2",
+			"S3",
+			"P1",
+			"P2",
+			"P3",
+			"P4"
+		],
+		"metadata": {
+			"description": "Beskriver planens prissättningsnivå och instansstorlek. Läs mer på https://azure.microsoft.com/en-us/pricing/details/app-service/"
+		}
+	},
+	"skuCap": {
+		"type": "int",
+		"defaultValue": 1,
+		"minValue": 1,
+		"metadata": {
+			"description": "Beskriver planenes instansräkning"
+		}
+	},
+	"artifactsLocation": {
+		"type": "string"
+	},
+	"artifactsLocationSasToken": {
+		"type": "securestring"
+	},
+	"CarsAppPackFolder": {
+		"type": "string",
+		"minLength": 1,
+		"metadata": {
+			"description": "Paketplats för Webdistribution. Relativ till parametern artifactsLocation"
+		}
+	},
+	"CarsAppPackFileName": {
+		"type": "string",
+		"minLength": 1,
+		"metadata": {
+			"description": "Webdistributionspaketets namn"
+		}
+	}
+  },
+  "variables": { 
+	"sqlServerName": "[concat('sqlserver', uniqueString(resourceGroup().id))]",
+	"webSiteName": "[concat('website', uniqueString(resourceGroup().id))]"
+  },
+  "resources": [ 
+	{
+		"type": "Microsoft.Storage/storageAccount",
+		"name": "[parameters('storageAccountName')]",
+		"apiVersion": "2015-06-15",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"accountType": "Standard_LRS"
+		}
+	},
+	{
+		"name": "[variables('sqlServerName')]",
+		"type": "Microsoft.Sql/servers",
+		"location": "[resourceGroup().location]",
+		"tags": {
+			"displayName": "SqlServer"
+		},
+		"apiVersion": "2014-04-01",
+		"properties": {
+			"administratorLogin": "[parameters('adminLogin')]",
+			"administratorLoginPassword": "[parameters('adminPsw')]"
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Storage/storageAccount/', parameters('storageAccountName'))]"
+		],
+		"resources": [
+			{
+				"name": "[parameters('dbName')]",
+				"type": "databases",
+				"location": "[resourceGroup().location]",
+				"tags": {
+					"displayName": "DataBase"
+				},
+				"apiVersion": "2014-04-01",
+				"dependsOn": [
+					"[concat('Microsoft.Sql/servers/', variables('sqlServerName'))]"
+				],
+				"properties": {
+					"edition": "[parameters('edition')]",
+					"collation": "[parameters('collation')]",
+					"maxSizeBytes": "[parameters('maxSizeBytes')]",
+					"requestedServiceObjectiveName": "[parameters('requestedServObjName')]"
+				}
+			},
+			{
+				"name": "AllowAllWindowsAzureIps",
+				"type": "firewallrules",
+				"location": "[resourceGroup().location]",
+				"apiVersion": "2014-04-01",
+				"properties": {
+					"endIpAddress": "255.255.255.255",
+					"startIpAddress": "0.0.0.0"
+				},
+				"dependsOn": [
+					"[concat('Microsoft.Sql/servers/', variables('sqlServerName')]"
+				]
+			}
+		]
+	},
+	{
+		"name": "[parameters('hostPlanName')]",
+		"type": "Microsoft.Web/serverfarms",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2015-08-01",
+		"properties": {
+			"name": "[parameters('hostPlanName')]"
+		},
+		"tags": {
+			"displayName": "HostingPlan"
+		},
+		"sku": {
+			"name": "[parameters('skuName')]",
+			"capacity": "[parameters('skuCap')]"
+		},
+		"properties": {
+			"name": "[parameters('hostPlanName')]"
+		}
+	},
+	{
+		"name": "[variables('webSiteName')]",
+		"type": "Microsoft.Web/sites",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2015-08-01",
+		"properties": {
+			"name": "[variables('webSiteName')]",
+			"serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostPlanName'))]"
+		},
+		"tags": {
+			"[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]": "empty",
+			"displayName": "Website"
+		},
+		"resources": [
+			{
+				"name": "connectionstrings",
+				"type": "config",
+				"apiVersion": "2015-08-01",
+				"properties": {
+					"DefaultConnection": {
+						"value": "[concat('Data Source=tcp:', reference(concat(Microsoft.Sql/servers/, variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('dbName'), ';User Id=', parameters('adminLogin'), '@', variables('sqlServerName'), ';Password=', parameters('adminPsw'), ';')]",
+						"type": "SQLServer"
+					}
+				}
+			},
+			{
+				"name": "MSDeploy",
+				"type": "extensions",
+				"location": "[resourceGroup().location]",
+				"apiVersion": "2015-08-01",
+				"properties": {
+					"connectionString": "",
+					"dbType": "None",
+					"packageUri": "[concat(parameters('_', artifactsLocation'), '/', parameters('CarsAppPackFolder'), '/', parameters('CarsAppPackFileName'), '_', parameters('artifactsLocationSasToken'))]",
+					"setParameters": {
+						"IIS Web Application Name": "[variables('webSiteName')]"
+					}
+				},
+				"tags": {
+					"displayName": "CarsApplication"
+				},
+				"dependsOn": [
+					"[concat('Microsoft.Web/sites/', variables('webSiteName'))]"
+				]
+			}
+		]		
+	},
+	{
+		"name": "[concat(parameters('hostPlanName'), '-', resourceGroup().name)]",
+		"type": "Microsoft.Insights/autoscalesettings",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]": "Resource",
+			"displayName": "AutoScaleSettings"
+		},
+		"properties": {
+			"profiles": [
+				{
+					"name": "Default",
+					"capacity": {
+						"minimum": 1,
+						"maximum": 2,
+						"default": 1
+					},
+					"rules": [
+						{
+							"metricTrigger": {
+								"metricName": "CpuPercentage",
+								"metricResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]",
+								"timeGrain": "PT1M",
+								"statistic": "Average",
+								"timeWindow": "PT10M",
+								"timeAggregation": "Average",
+								"operator": "GreaterThan",
+								"threshold": 80.0
+							},
+							"scaleAction": {
+								"direction": "Increase",
+								"type": "ChangeCount",
+								"value": 1,
+								"coolDown": "PT10M"
+							}
+						},
+						{
+							"metricTrigger": {
+								"metricName": "CpuPercentage",
+								"metricResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]",
+								"timeGrain": "PT1M",
+								"statistic": "Average",
+								"timeWindow": "PT1H",
+								"timeAggregation": "Average",
+								"operator": "LessThan",
+								"threshold": 60.0
+							},
+							"scaleAction": {
+								"direction": "Decrease",
+								"type": "ChangeCount",
+								"value": 1,
+								"coolDown": "PT1H"
+							}
+						}
+					]
+				}
+			],
+			"enabled": false,
+			"name": "[concat(parameters('hostPlanName'), '-', resourceGroup().name)]",
+			"targetResourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]"
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Web/serverfarms/', parameters('hostPlanName'))]"
+		]
+	},
+	{
+		"name": "[concat('ServerErrors ', variables('webSiteName'))]",
+		"type": "Microsoft.Insights/alertrules",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, 'providers/Microsoft.Web/sites/', variables('webSiteName'))]": "Resource",
+			"displayName": "ServerErrorsAlertRule"
+		},
+		"properties": {
+			"name": "[concat('ServerErrors ', variables('webSiteName'))]",
+			"description": "[concat(variables('webSiteName'), ' har några serverfel, statuskod 5XX')]",
+			"isEnabled": false,
+			"condition": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+				"dataSource": {
+					"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+					"resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('webSiteName'))]",
+					"metricName": "Http5XX"
+				},
+				"operator": "GreaterThan",
+				"threshold": 0.0,
+				"windowSize": "PT5M"
+			},
+			"action": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+				"sendToServiceOwners": true,
+				"customEmails": []
+			}
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Web/sites/', variables('webSiteName'))]"
+		]
+	},
+	{
+		"name": "[concat('ForbiddenRequests ', variables('webSiteName'))]",
+		"type": "Microsoft.Insights/alertrules",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('webSiteName'))]": "Resource",
+			"displayName": "ForbiddenRequestsAlertRule"
+		},
+		"properties": {
+			"name": "[concat('ForbiddenRequests ', variables('webSiteName'))]",
+			"description": "[concat(variables('webSiteName'), ' har några förbjudna förfrågningar, statuskod 403')]",
+			"isEnabled": false,
+			"condition": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+				"dataSource": {
+					"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+					"resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/sites/', variables('webSiteName'))]",
+					"metricName": "Http403"
+				},
+				"operator": "GreaterThan",
+				"threshold": 0,
+				"windowSize": "PT5M"
+			},
+			"action": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+				"sendToServiceOwners": true,
+				"customEmails": []
+			}
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Web/sites/', variables('webSiteName'))]"
+		]
+	},
+	{
+		"name": "[concat('CPUHigh ', parameters('hostPlanName'))]",
+		"type": "Microsoft.Insights/alertrules",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]": "Resource",
+			"displayName": "CPUHighAlertRule"
+		},
+		"properties": {
+			"name": "[concat('CPUHigh ', parameters('hostPlanName'))]",
+			"description": "[concat('Snitt-CPU är hög för alla instanser av ', parameters('hostPlanName'))]",
+			"isEnabled": false,
+			"condition": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+				"dataSource": {
+					"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+					"resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]",
+					"metricName": "CpuPercentage"
+				},
+				"operator": "GreaterThan",
+				"threshold": 90,
+				"windowSize": "PT15M"
+			},
+			"action": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+				"sendToServiceOwners": true,
+				"customEmails": []
+			}
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Web/serverfarms/', parameters('hostPlanName'))]"
+		]
+	},
+	{
+		"name": "[concat('LongHttpQueue ', parameters('hostPlanName'))]",
+		"type": "Microsoft.Insights/alertrules",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]": "Resource",
+			"displayName": "AutoScaleSettings"
+		},
+		"properties": {
+			"name": "[concat('LongHttpQueue ', parameters('hostPlanName'))]",
+			"description": "[concat('HTTP-kön för instanserna av ', parameters('hostPlanName'), ' har många väntande förfrågningar')]",
+			"isEnabled": false,
+			"condition": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.ThresholdRuleCondition",
+				"dataSource": {
+					"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleMetricDataSource",
+					"resourceUri": "[concat(resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostPlanName'))]",
+					"metricName": "HttpQueueLength"
+				},
+				"operator": "GreaterThan",
+				"threshold": 100.0,
+				"windowSize": "PT5M"
+			},
+			"action": {
+				"odata.type": "Microsoft.Azure.Management.Insights.Models.RuleEmailAction",
+				"sendToServiceOwners": true,
+				"customEmails": []
+			}
+		},
+		"dependsOn": [
+			"[concat('Microsoft.Web/serverfarms/', parameters('hostPlanName'))]"
+		]
+	},
+	{
+		"name": "[variables('webSiteName')]",
+		"type": "Microsoft.Insights/components",
+		"location": "Central US",
+		"apiVersion": "2014-04-01",
+		"tags": {
+			"[concat('hidden-link:', resourceGroup().id, 'providers/Microsoft.Web/sites/', variables('webSiteName'))]": "Resource",
+			"displayName": "AppInsightsComponent"
+		},
+		"properties": {
+			"ApplicationId": "[variables(webSiteName)]"
+		},
+		"dependsOn": []
+	}
+  ],
+  "outputs": {  }
+}

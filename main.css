@@ -1,0 +1,613 @@
+/*:::::::::::::::::::::::::::::::::::: D A T O R::::::::::::::::::::::::::::::::::::*/
+
+	html, body {
+		width: 100%; 
+		height: 100%;
+	}
+
+	body {
+		margin: 0px;
+		background: white;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 15px;
+		overflow: hidden;
+	}
+	
+	
+
+	/*=====================================HEADER=====================================*/
+
+	div#headerWrap{
+		width: 100%;
+		height: 25%;
+		position: fixed;
+		overflow: hidden;
+		z-index: 100;
+		background-color: white;
+		clear: both;
+		top: 0;
+		left: 0;
+		border-bottom: 1px solid #fbceb1;
+	
+	/*---------------------------------LOGOTYP---------------------------------*/
+	
+	}
+	div#logoWrap{
+		overflow: hidden;
+		clear: both;
+		height: 75%;
+		border-bottom: 1px solid #fbceb1;
+	}
+	div#logoCont{
+		overflow: hidden;
+		height: 100%;
+		
+	}
+	div#logoDiv{
+		height: 100%;
+		width: 50%;
+		margin: 0 auto;
+		background-image: url("mainlogo_black.png");
+		background-position: center;
+		background-size: 100%;
+		background-repeat: no-repeat;		
+	}
+	
+	/*---------------------------------MENY---------------------------------*/
+	#menuWrap{
+		height: 25%;
+		width: 100%;
+		float: left;
+		clear: both;
+	}
+	#menuCont{
+		overflow: hidden;
+		height: 100%;
+	}
+	.menuItem{
+		width: 14.2%;
+		height: 100%;
+		float: left;
+		text-align: center;
+		cursor: pointer;
+		padding-top: 0.5%;
+	}
+	.menuItem:hover{
+		background-color: white;
+	}
+	.menuItem:hover .menuItemA{
+		color: #fbceb1;
+	}
+	.menuItemA{		
+		text-decoration: none;
+		color: black;
+		text-transform: uppercase;
+		display: block;
+		width: 100%;
+		margin: 0 auto;
+		font-size: 150%;
+	}
+	
+	.menuItemA p{
+		margin: 0 auto;
+	}
+	
+	div#burgerMenu{
+		display: none;
+		width: 0;
+		height: 0;
+	}
+	/*=====================================MAINPAGE=====================================*/
+	div#distance{
+		width: 100%;
+		height: 25%;
+		clear: both;
+	}
+	div#mainPageWrap{
+		position: absolute;
+		width: 100%;
+		height: 75%;
+		overflow: scroll;
+		float: left;
+		z-index: 99;
+	}
+	
+	div#mainPageCont{
+		width: 100%;
+		float: left;
+		clear: both;
+	}
+	div#topImgCont{
+		height: 100%;
+		width: 100%;
+		float: left;
+		clear: both;
+	}
+	#topImgCont img{
+		width: 100%;
+	}
+	div.topImg{
+		width: 100%;
+		height: 100%;
+		background-image: url("inbjudningskort.PNG");
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div.infoCont{
+		width: 100%;
+		min-height: 99%;
+		float: left;
+		clear: both;
+		background-color: white;
+		border-top: 5px double #fbceb1;
+		border-bottom: 5px double #fbceb1;
+		overflow: hidden;
+	}
+	.infoCont a {
+		color: black;
+		font-weight: bold;
+	}
+	div.infoHeader{
+		height: 15%;
+	}
+	.infoHeader h2{
+		display: block;
+		color: black;
+		height: 100%;
+		margin-top: 1%;
+		text-align: center;
+		letter-spacing: 10px;
+		font-weight: normal;
+	}
+	
+	.heartCont{
+		width: 100%;
+		text-align: center;
+		padding-top: 2%;
+	}
+	
+	.infoArea{
+		width: 60%;
+		height: 100%;
+		margin: 0 auto;
+		text-align: center;
+		font-size: 125%;
+		padding: 2%;
+	}
+	
+	.infoArea ul{
+		list-style-image: url('heartMini.png');
+	}
+	
+	h4{
+		text-transform: uppercase;
+		font-weight: normal;
+	}
+		
+	#googleFr{
+		width: 100%;
+		height: auto;
+		border: 5px double #fbceb1;
+	}
+	
+	#toasts{
+		display: block;
+		height: 55%;
+		border: 5px double #fbceb1;
+		margin: 0 auto;
+		margin-bottom: 1%;
+	}
+	
+	.slideDiv{
+		height: 400px;
+		width: 400px;
+		overflow: hidden;
+		border: 5px double #fbceb1;
+		margin: 0 auto;
+	}
+	
+	.slideDiv img {
+		border: 0px;
+		width: 400px;
+		height: 400px;
+		display: none;
+	}
+	
+	.followImg {
+		display: block;
+		height: 50%;
+		width: 50%;
+		border: 5px double #fbceb1;
+		margin: 0 auto;
+		margin-bottom: 1%;
+	}
+	
+	div#img1{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5122 (2).JPG");
+		background-size: 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img2{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/åmund1.jpg");
+		background-size: 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img3{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5123 (2).JPG");
+		background-size: auto;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img4{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/bridge.jpg");
+		background-size: auto;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img5{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/toast.jpg");
+		background-size: 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img6{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5130.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	
+	
+	/*=====================================FOOTER=====================================*/
+		
+	#footerWrap{
+		height: 15%;
+		width: 100%;
+		border-top: 1px solid #fbceb1;
+	}
+	
+	#clock{
+		width: 100%;
+		text-align: center;
+		color: black;
+		font-family: monospace;
+		letter-spacing: 3px;
+		font-weight: 300;
+		font-size: 150%;
+	}
+	
+	
+	
+/*:::::::::::::::::::::::::::::::::::: M O B I L ::::::::::::::::::::::::::::::::::::*/
+@media only screen and (max-width: 1023px){
+	html, body{
+		width: 100%;
+		height: 100%;		
+	}
+	body{
+		margin: 0px;
+		background: white;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 15px;
+		overflow: hidden;
+		
+	}
+
+	/*=====================================HEADER=====================================*/
+	
+	div#headerWrap{
+		width: 100%;
+		height: 25%;
+		position: fixed;
+		overflow: hidden;
+		z-index: 100;
+		background-color: white;
+		clear: both;
+		top: 0;
+		left: 0;
+		border-bottom: 1px solid #fbceb1;
+	}
+	/*---------------------------------LOGOTYP---------------------------------*/
+	
+	div#logoWrap{
+		overflow: hidden;
+		clear: both;
+		height: 75%;
+		width: 100%;
+		border-bottom: 1px solid #fbceb1;
+	}
+	div#logoCont{
+		overflow: hidden;
+		height: 100%;
+		width: 100%;		
+	}
+	div#logoDiv{
+		width: 100%;
+		background-image: url("mainlogo_black.png");
+		background-position: center;
+		background-repeat: no-repeat;
+		overflow: hidden;
+		
+	}
+	/*---------------------------------MENY---------------------------------*/
+	#menuWrap{
+		height: 25%;
+		width: 100%;
+		float: left;
+		clear: both;
+		overflow: hidden;
+	}
+	#menuCont{
+		overflow: hidden;
+		height: 0%;
+		width: 0%;
+		display: none;
+	}
+	/* .menuItem{
+		width: 20%;
+		height: 100%;
+		float: left;
+		text-align: center;
+	}
+	.menuItem:hover{
+		background-color: white;
+	}
+	.menuItem:hover .menuItemA{
+		color: #fbceb1;
+	}
+	.menuItemA{		
+		text-decoration: none;
+		color: white;
+		text-transform: uppercase;
+		display: block;
+		height: 100%;
+		width: 100%;
+		border: 1px solid black;
+	} */
+	div#menuBtnCont{
+		overflow: hidden;
+		height: 100%;
+		width: 100%;
+		text-align: center;
+		cursor: pointer;
+		background-image: url("menu_b.png");
+		background-repeat: no-repeat;
+		background-size: 10%;
+		background-position: center;
+	}
+	#menuBtnCont:hover{
+		background-image: url("menu.png");
+		background-color: white;
+		border-bottom: #fbceb1;
+	}
+	div#burgerMenu{
+		width: 100%;
+		height: auto;
+		position: fixed;
+		background-color: white;
+		z-index: 200;
+		border-bottom: 1px solid #fbceb1;
+	}
+	div.burgerMenuItem{
+		width: 100%;
+		float: left;
+		clear: both;
+		text-align: center;
+		cursor: pointer;
+		background-color: white;
+	}
+	.burgerA{
+		text-decoration: none;
+		color: black;
+		text-transform: uppercase;
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+	.burgerMenuItem:hover{
+		background-color: white;
+	}
+	.burgerMenuItem:hover .burgerA{
+		color: #fbceb1;
+	}
+	
+	/*=====================================MAINPAGE=====================================*/
+	div#distance{
+		width: 100%;
+		height: 25%;
+		clear: both;
+	}
+	div#mainPageWrap{
+		position: absolute;
+		width: 100%;
+		height: 75%;
+		overflow: scroll;
+		float: left;
+		z-index: 99;
+	}
+	div.topImg{
+		width: 100%;
+		height: 100%;
+		background-image: url("inbjudningskort.PNG");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div.infoCont{
+		width: 100%;
+		min-height: 99%;
+		float: left;
+		clear: both;
+		background-color: white;
+		border-top: 3px double #fbceb1;
+		border-bottom: 3px double #fbceb1;
+	}
+	
+	.heartCont{
+		width: 100%;
+		text-align: center;
+		padding-top: 2%;
+		padding-bottom: 2%;
+	}
+	
+	.infoArea{
+		width: 90%;
+		margin: 0 auto;
+		text-align: center;
+		font-size: 100%;
+	}
+	
+	.infoArea ul{
+		list-style-type: none;
+	}
+
+	
+	#toasts{
+		display: block;
+		height: 55%;
+		border: 5px double #fbceb1;
+		margin: 0 auto;
+		margin-bottom: 1%;
+	}
+	
+	.slideDiv{
+		height: 250px;
+		width: 250px;
+		overflow: hidden;
+		border: 5px double #fbceb1;
+		margin: 0 auto;
+	}
+	
+	.slideDiv img {
+		border: 0px;
+		width: 250px;
+		height: 250px;
+		display: none;
+	}
+	
+	div#img1{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5122.JPG");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center bottom;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img2{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/åmund1.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img3{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5123.JPG");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img4{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/bridge.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img5{
+		width: 100%;
+		height: 100%;
+		background-image: url("images/toast.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	div#img6{
+		width: 100%;
+		height: 100%;
+		background-image: url("IMG_5130.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.5;
+		float: left;
+		clear: both;
+	}
+	
+	
+	
+	
+	/*=====================================FOOTER=====================================*/
+	#clock{
+		font-size: 75%;
+		letter-spacing: 1px;
+	}
+	
+}
+
+	
+
+	
+
+
+
+
+
+

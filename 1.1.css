@@ -1,0 +1,81 @@
+html, body{
+	width: 100%;	
+}
+
+body{
+	margin: 0px;
+	background-color: white;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	font-family: monospace;
+}
+
+img{
+	position: absolute;
+	height: 90%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/*cursor: pointer;*/
+}
+
+div.subCont{
+	width: 100%;
+	height: 50%;
+}
+
+div.subSubCont{
+	width: 100%;
+	height: 50%;
+}
+
+div#clock{
+	width: 100%;
+	text-align: center;
+	color: black;
+	font-family: monospace;
+	letter-spacing: 3px;
+	font-weight: 300;
+	font-size: 150%;
+}
+
+a{
+	text-decoration: none;
+}
+
+#blur{
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	background-color: white;
+	opacity: 0.75;
+	z-index: 200;
+	position: absolute;
+}
+
+h1{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 300;
+	width: 100%;
+	text-align: center;
+	font-size: 300%;
+}
+
+@media only screen and (max-width: 1023px){
+	div#clock{
+		font-size: 200%;
+	}
+	
+	h1{
+		font-size: 300%;
+	}
+	
+	img{
+		height: 70%;
+	}
+}
+
